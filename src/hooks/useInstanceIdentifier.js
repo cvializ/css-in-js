@@ -2,7 +2,8 @@ import { useMemo } from '/dependencies/react.js';
 
 let id = 0;
 
-export const useUniqueIdentifier = () => {
+// Create a per-component-instance identifier
+export const useInstanceIdentifier = () => {
     const idMemo = useMemo(() => id++, []);
     return idMemo;
 };

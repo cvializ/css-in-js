@@ -7,16 +7,16 @@
 -->
 <script src="/development.js"></script>
 <script type="module">
-    import { html } from '/dependencies/htm.js';
-    import React from '/dependencies/react.js';
+    import { useState } from '/dependencies/react.js';
     import { createRoot } from '/dependencies/react-dom.js';
+    import { html } from '/dependencies/htm.js';
 
     import { Component } from '/src/components/Component.js';
-    import { useStyles } from '/src/useStyles.js';
-    import { css } from '/src/css.js';
+    import { useStyles } from '/src/hooks/useStyles.js';
+    import { css } from '/src/lib/css.js';
 
     const App = ({ page }) => {
-        const [ color, setColor ] = React.useState('');
+        const [ color, setColor ] = useState('');
         const { styles } = useStyles('app', css`
             h1 {
                 color: red;
@@ -27,6 +27,7 @@
         <div className="${styles.app}">
             <${Header} name="ToDo's (${color})" />
             <${Component} color=${color} />
+            <${Component} color="rebeccapurple" />
             <input value=${color} onChange=${e => setColor(e.target.value)} />
             <${Footer}>footer content over there</${Footer}>
         </div>
