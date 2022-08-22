@@ -46,8 +46,16 @@ const getStyleSingleton = (parent = document.body) => {
     return rootStyleNode;
 };
 
-export const mergeStylesheets = (root, ...sheets) => {
+export const mergeStylesheets = (...sheets) => {
+    const style = document.createElement('style');
 
+    for (let i = 0; i < sheets.length; i++) {
+        for (let j = 0; j < sheets[i].cssRules.length; j++) {
+            style.innerText += sheets[i].cssRules[j].cssText;
+        }
+    }
+
+    return style;
 };
 
 export const scopeStyleSheet = (scope, specifier, sheet) => {
@@ -67,3 +75,21 @@ export const scopeStyleSheet = (scope, specifier, sheet) => {
 
     return newStyle;
 };
+
+
+// A collection of rules. Can be rendered to a style tag
+class StyleSheet {
+    constructor(sheet) {
+        this.rules = [...sheet.cssRules];
+    }
+
+    render() {
+        const style = document.createElement('style');
+
+        this.rules.forEach(rule => {
+            style.innerText += rule.cssText;
+        });
+
+        return style;
+    }
+}

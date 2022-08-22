@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <title>htm Demo</title>
+<link rel="stylesheet" href="/static/style/index.css" />
 <!--
     The development script includes development-specific behaviors
     when running the webpack dev server. It is empty otherwise.
@@ -24,13 +25,13 @@
         `)
 
         return html`
-        <div className="${styles.app}">
-            <${Header} name="ToDo's (${color})" />
-            <${Component} color=${color} />
-            <${Component} color="rebeccapurple" />
-            <input value=${color} onChange=${e => setColor(e.target.value)} />
-            <${Footer}>footer content over there</${Footer}>
-        </div>
+            <div className="${styles.app}">
+                <${Header} name="ToDo's (${color})" />
+                <${Component} color=${color} />
+                <${Component} color="rebeccapurple" />
+                <input value=${color} onChange=${e => setColor(e.target.value)} />
+                <${Footer}>footer content over there</${Footer}>
+            </div>
         `;
     }
 

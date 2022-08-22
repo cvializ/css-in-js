@@ -14,3 +14,10 @@ yarn serve
 
 open "https://localhost:8080/demo/01-simple/"
 ```
+
+## Ergonomics
+
+### Syntax Highlighting
+Installing a lit-html syntax highlighting plugin to your editor will highlight the syntax just like JSX is highlighted. One for VSCode is here: https://marketplace.visualstudio.com/items?itemName=bierner.lit-html
+
+A styled-components syntax highlighting plugin will add syntax highlighting to the css tagged template literals. An example VSCode plugin is here: https://marketplace.visualstudio.com/items?itemName=styled-components.vscode-styled-components

@@ -14,10 +14,15 @@ export const useStyles = (scope, css) => {
     const initialScope = useInitialValue(scope);
     const uniqueId = useInstanceIdentifier();
 
+    // const { getSheet, setSheet } = useStyleSheet();
+
     const doIt = (css, initialScope) => {
         let classNames = [initialScope];
 
+        // new sheet
         const sheet = stylesheetFromTemplate(css);
+
+        // sheet scope
         const newStyle = scopeStyleSheet(initialScope, `${initialScope}__${uniqueId}`, sheet);
 
         for (let i = 0; i < sheet.cssRules.length; i++) {
@@ -35,6 +40,8 @@ export const useStyles = (scope, css) => {
 
         classMappingRef.current = classMapping;
 
+        // sheet.commit();
+        // commit changes
         wrapperRef.current.innerHTML = '';
         wrapperRef.current.appendChild(newStyle);
         document.body.appendChild(wrapperRef.current);
