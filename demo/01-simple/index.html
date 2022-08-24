@@ -6,13 +6,14 @@
     The development script includes development-specific behaviors
     when running the webpack dev server. It is empty otherwise.
 -->
+<script src="/node_modules/rxjs/dist/bundles/rxjs.umd.js"></script>
 <script src="/development.js"></script>
 <script type="module">
     import { useState } from '/dependencies/react.js';
     import { createRoot } from '/dependencies/react-dom.js';
     import { html } from '/dependencies/htm.js';
 
-    import { Component } from '/src/components/Component.js';
+    import { ComponentContainer } from '/src/components/ComponentContainer.js';
     import { useStyles } from '/src/hooks/useStyles.js';
     import { css } from '/src/lib/css.js';
 
@@ -27,8 +28,8 @@
         return html`
             <div className="${styles.app}">
                 <${Header} name="ToDo's (${color})" />
-                <${Component} color=${color} />
-                <${Component} color="rebeccapurple" />
+                <${ComponentContainer} color=${color} />
+                <${ComponentContainer} color="rebeccapurple" />
                 <input value=${color} onChange=${e => setColor(e.target.value)} />
                 <${Footer}>footer content over there</${Footer}>
             </div>

@@ -1,5 +1,6 @@
-import { useReducer } from '/dependencies/react.js';
-
+import { getActionObservable, getStateObservable } from '/src/lib/react-observable.js';
+import { useReducer, useEffect } from '/dependencies/react.js';
+import rxjs from '/dependencies/rxjs.js';
 // Data modules but as a hook
 
 export const UNREQUESTED_STATE = 'unrequested';
@@ -18,7 +19,7 @@ export const getInitialState = (optInitialValue) => ({
     errors: {},
 });
 
-const requestReducer = (state = getInitialState(optInitialValue), action = {}) => {
+const requestReducer = (state = getInitialState(), action = {}) => {
     switch (action.type) {
         case REQUEST_ACTION:
             return {
@@ -39,7 +40,7 @@ const requestReducer = (state = getInitialState(optInitialValue), action = {}) =
                 value: action.payload,
             };
         case RESET_ACTION:
-            return getInitialState(optInitialValue);
+            return getInitialState();
         default:
             return state;
     }
@@ -71,14 +72,54 @@ const dataReset = () => ({
     type: RESET_ACTION,
 });
 
-export const useRequest = () => {
-    const [ state, dispatch ] = useReducer(requestReducer);
+const logger = () => (store) => (next) => (action) => {
+    const prevState = store.getState();
+    const nextState = next(action);
+    console.log('prevState', prevState, 'action', action, 'nextState', nextState);
+};
+
+export const useRequest = (sideEffects = []) => {
+    const [ state, rawDispatch ] = useReducer(requestReducer, getInitialState());
+
+    const { action$, nextAction } = getActionObservable();
+    const { state$, nextState } = getStateObservable();
+
+    const dispatch = (action) => {
+        const store = {
+            getState: () => state,
+            dispatch: rawDispatch,
+        };
+
+        const next = (action) => {
+
+            // HACK
+            const newState = requestReducer(state, action);
+
+            nextState(newState);
+            nextAction(action);
+
+            rawDispatch(action);
+            return newState;
+        };
+
+        logger()(store)(next)(action);
+    };
+
+    useEffect(() => {
+        const epic$ = rxjs.merge(sideEffects.map((sideEffect) => sideEffect(action$, state$))).pipe(rxjs.mergeAll());
+        epic$.subscribe(dispatch);
+    }, []);
 
     return {
-        dataRequest: (...args) => dispatch(dataRequest(...args)),
-        dataError: (...args) => dispatch(dataError(...args)),
-        dataSuccess: (...args) => dispatch(dataSuccess(...args)),
-        dataReset: (...args) => dispatch(dataReset(...args)),
+        action$,
+        state$,
+
+        dispatch,
+
+        dataRequest,
+        dataError,
+        dataSuccess,
+        dataReset,
 
         getIsUnrequested: () => getIsUnrequested(state),
         getIsLoading: () => getIsLoading(state),
